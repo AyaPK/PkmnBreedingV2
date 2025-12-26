@@ -1,4 +1,4 @@
-import type { KeyboardEvent } from 'react'
+import type { FocusEvent, KeyboardEvent } from 'react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import RefreshIcon from '@mui/icons-material/Refresh'
 import {
@@ -172,34 +172,48 @@ export default function ParentInputCard({
               const next = typeof value === 'string' ? value : value ?? ''
               onChangeInput(next)
             }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Pokémon"
-                placeholder="e.g. pikachu"
-                onKeyDown={(e: KeyboardEvent) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault()
-                    void load()
-                  }
-                }}
-                helperText="Type to search, pick a suggestion, or press Enter"
-                InputProps={{
-                  ...params.InputProps,
-                  endAdornment: (
-                    <>
-                      {loadingOptions ? <CircularProgress color="inherit" size={16} /> : null}
-                      <InputAdornment position="end">
-                        <Typography variant="caption" color="text.secondary">
-                          {normalized}
-                        </Typography>
-                      </InputAdornment>
-                      {params.InputProps.endAdornment}
-                    </>
-                  ),
-                }}
-              />
-            )}
+            renderInput={(params) => {
+              const { inputProps, ...rest } = params
+              const { onBlur, ...restInputProps } = inputProps
+
+              return (
+                <TextField
+                  {...rest}
+                  inputProps={{
+                    ...restInputProps,
+                    onBlur: (e: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+                      ;(onBlur as unknown as ((evt: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => void) | undefined)?.(
+                        e,
+                      )
+                      void load()
+                    },
+                  }}
+                  label="Pokémon"
+                  placeholder="e.g. pikachu"
+                  onKeyDown={(e: KeyboardEvent) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault()
+                      void load()
+                    }
+                  }}
+                  helperText="Type to search, pick a suggestion, or press Enter"
+                  InputProps={{
+                    ...params.InputProps,
+                    endAdornment: (
+                      <>
+                        {loadingOptions ? <CircularProgress color="inherit" size={16} /> : null}
+                        <InputAdornment position="end">
+                          <Typography variant="caption" color="text.secondary">
+                            {normalized}
+                          </Typography>
+                        </InputAdornment>
+                        {params.InputProps.endAdornment}
+                      </>
+                    ),
+                  }}
+                />
+              )
+            }}
           />
 
           {error ? <Alert severity="error">{error}</Alert> : null}

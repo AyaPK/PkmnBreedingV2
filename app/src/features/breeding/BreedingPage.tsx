@@ -41,9 +41,6 @@ export default function BreedingPage() {
   const [p1Pokemon, setP1Pokemon] = useState<Pokemon | null>(null)
   const [p2Pokemon, setP2Pokemon] = useState<Pokemon | null>(null)
   const [prefillKey, setPrefillKey] = useState(0)
-
-  const [eggGroups1, setEggGroups1] = useState<string[] | null>(null)
-  const [eggGroups2, setEggGroups2] = useState<string[] | null>(null)
   const [breedStatus, setBreedStatus] = useState<BreedStatus>({ kind: 'idle' })
 
   const abortRef = useRef<AbortController | null>(null)
@@ -55,9 +52,6 @@ export default function BreedingPage() {
     abortRef.current?.abort()
     const controller = new AbortController()
     abortRef.current = controller
-
-    setEggGroups1(null)
-    setEggGroups2(null)
 
     if (!p1Key || !p2Key) {
       setBreedStatus({ kind: 'idle' })
@@ -74,8 +68,6 @@ export default function BreedingPage() {
         if (controller.signal.aborted) return
         const g1 = s1.egg_groups.map((g) => g.name)
         const g2 = s2.egg_groups.map((g) => g.name)
-        setEggGroups1(g1)
-        setEggGroups2(g2)
         const { canBreed, reason } = canBreedFromEggGroups(g1, g2)
         setBreedStatus({ kind: 'ready', canBreed, reason })
       })
