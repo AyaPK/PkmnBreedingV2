@@ -168,9 +168,13 @@ export default function ParentInputCard({
             }}
             inputValue={input}
             onInputChange={(_, value) => onChangeInput(value)}
-            onChange={(_, value) => {
+            onChange={(_, value, reason) => {
               const next = typeof value === 'string' ? value : value ?? ''
               onChangeInput(next)
+
+              if (reason === 'selectOption' && next) {
+                void load(next)
+              }
             }}
             renderInput={(params) => {
               const { inputProps, ...rest } = params

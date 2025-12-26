@@ -6,6 +6,30 @@ import './App.css'
 function App() {
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: 'background.default', color: 'text.primary' }}>
+      <Box
+        sx={{
+          height: { xs: 96, sm: 120 },
+          width: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          py: 1,
+        }}
+      >
+        <Box
+          component="img"
+          src="/images/header.png"
+          alt="Pokémon Breeding Simulator"
+          sx={{
+            height: '120%',
+            width: 'auto',
+            maxWidth: '100%',
+            objectFit: 'contain',
+            display: 'block',
+          }}
+        />
+      </Box>
+
       <AppBar position="sticky" color="transparent" elevation={0}>
         <Toolbar>
           <CatchingPokemonIcon sx={{ mr: 1 }} />

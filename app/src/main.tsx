@@ -11,6 +11,20 @@ const theme = createTheme({
     primary: {
       main: '#7c4dff',
     },
+    background: {
+      default: 'transparent',
+    },
+  },
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          backgroundImage: "url('/images/bg-dark.png'), url('/images/bg.png')",
+          backgroundRepeat: 'repeat',
+          backgroundAttachment: 'fixed',
+        },
+      },
+    },
   },
 })
 

@@ -24,6 +24,7 @@ export type Pokemon = {
   abilities: PokemonAbility[]
   sprites: PokemonSprites
   moves: PokemonMove[]
+  species: NamedAPIResource
 }
 
 export type PokemonSpecies = {
@@ -75,6 +76,10 @@ export async function getPokemonSpecies(
 ): Promise<PokemonSpecies> {
   const key = normalizePokemonName(nameOrId)
   return fetchJson<PokemonSpecies>(`${API_BASE}/pokemon-species/${encodeURIComponent(key)}`, signal)
+}
+
+export async function getPokemonSpeciesByUrl(url: string, signal?: AbortSignal): Promise<PokemonSpecies> {
+  return fetchJson<PokemonSpecies>(url, signal)
 }
 
 export async function getEvolutionChainByUrl(url: string, signal?: AbortSignal): Promise<EvolutionChain> {

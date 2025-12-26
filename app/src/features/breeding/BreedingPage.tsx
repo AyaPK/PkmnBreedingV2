@@ -2,7 +2,7 @@ import SwapHorizIcon from '@mui/icons-material/SwapHoriz'
 import { Chip, Divider, Grid, IconButton, Stack, Tooltip, Typography } from '@mui/material'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import ParentInputCard from './ParentInputCard'
-import { getPokemonSpecies, normalizePokemonName, type Pokemon } from '../../api/pokeapi'
+import { getPokemonSpeciesByUrl, normalizePokemonName, type Pokemon } from '../../api/pokeapi'
 
 type BreedStatus =
   | { kind: 'idle' }
@@ -48,12 +48,15 @@ export default function BreedingPage() {
   const p1Key = useMemo(() => (p1Pokemon ? normalizePokemonName(p1Pokemon.name) : null), [p1Pokemon])
   const p2Key = useMemo(() => (p2Pokemon ? normalizePokemonName(p2Pokemon.name) : null), [p2Pokemon])
 
+  const p1SpeciesUrl = useMemo(() => p1Pokemon?.species.url ?? null, [p1Pokemon])
+  const p2SpeciesUrl = useMemo(() => p2Pokemon?.species.url ?? null, [p2Pokemon])
+
   useEffect(() => {
     abortRef.current?.abort()
     const controller = new AbortController()
     abortRef.current = controller
 
-    if (!p1Key || !p2Key) {
+    if (!p1Key || !p2Key || !p1SpeciesUrl || !p2SpeciesUrl) {
       setBreedStatus({ kind: 'idle' })
       return
     }
@@ -61,8 +64,8 @@ export default function BreedingPage() {
     setBreedStatus({ kind: 'loading' })
 
     Promise.all([
-      getPokemonSpecies(p1Key, controller.signal),
-      getPokemonSpecies(p2Key, controller.signal),
+      getPokemonSpeciesByUrl(p1SpeciesUrl, controller.signal),
+      getPokemonSpeciesByUrl(p2SpeciesUrl, controller.signal),
     ])
       .then(([s1, s2]) => {
         if (controller.signal.aborted) return
@@ -75,7 +78,7 @@ export default function BreedingPage() {
         if (controller.signal.aborted) return
         setBreedStatus({ kind: 'error', message: e instanceof Error ? e.message : 'Failed to load egg groups' })
       })
-  }, [p1Key, p2Key])
+  }, [p1Key, p2Key, p1SpeciesUrl, p2SpeciesUrl])
 
   const swapParents = () => {
     const nextP1Input = p2Input

@@ -5,6 +5,9 @@ body {
 
 body {
   margin: 0;
+  background-image: url('/images/bg.png');
+  background-repeat: repeat;
+  background-attachment: fixed;
 }
 
 code {
