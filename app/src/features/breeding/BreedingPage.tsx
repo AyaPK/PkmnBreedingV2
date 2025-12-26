@@ -1,14 +1,48 @@
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz'
-import { Chip, Divider, Grid, IconButton, Stack, Tooltip, Typography } from '@mui/material'
+import {
+  Button,
+  Chip,
+  CircularProgress,
+  Divider,
+  FormControlLabel,
+  Grid,
+  IconButton,
+  Paper,
+  Stack,
+  Switch,
+  Tooltip,
+  Typography,
+} from '@mui/material'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import ParentInputCard from './ParentInputCard'
-import { getPokemonSpeciesByUrl, normalizePokemonName, type Pokemon } from '../../api/pokeapi'
+import OutcomeCard from './OutcomeCard'
+import ParentBreedingSettings from './ParentBreedingSettings'
+import {
+  getEvolutionChainByUrl,
+  getPokemon,
+  getPokemonSpeciesByUrl,
+  normalizePokemonName,
+  type Pokemon,
+} from '../../api/pokeapi'
+import {
+  breedOutcome,
+  makeDefaultParentConfig,
+  type BreedOutcome,
+  type ParentBreedingConfig,
+  type ShinyOptions,
+} from '../../domain/breeding/breeding'
 
 type BreedStatus =
   | { kind: 'idle' }
   | { kind: 'loading' }
   | { kind: 'error'; message: string }
   | { kind: 'ready'; canBreed: boolean; reason: string }
+
+type OutcomeState =
+  | { kind: 'idle' }
+  | { kind: 'loading' }
+  | { kind: 'error'; message: string }
+  | { kind: 'ready'; babyName: string; spriteUrl: string | null; outcome: BreedOutcome }
 
 function canBreedFromEggGroups(groups1: string[], groups2: string[]): { canBreed: boolean; reason: string } {
   const set1 = new Set(groups1)
@@ -38,10 +72,20 @@ export default function BreedingPage() {
   const [p1Ability, setP1Ability] = useState<string | null>(null)
   const [p2Ability, setP2Ability] = useState<string | null>(null)
 
+  const [p1Config, setP1Config] = useState<ParentBreedingConfig>(() => makeDefaultParentConfig())
+  const [p2Config, setP2Config] = useState<ParentBreedingConfig>(() => makeDefaultParentConfig())
+  const [shinyOptions, setShinyOptions] = useState<ShinyOptions>({
+    masuda: false,
+    shinyCharm: false,
+    cyiniLuck: false,
+  })
+
   const [p1Pokemon, setP1Pokemon] = useState<Pokemon | null>(null)
   const [p2Pokemon, setP2Pokemon] = useState<Pokemon | null>(null)
   const [prefillKey, setPrefillKey] = useState(0)
   const [breedStatus, setBreedStatus] = useState<BreedStatus>({ kind: 'idle' })
+
+  const [outcomeState, setOutcomeState] = useState<OutcomeState>({ kind: 'idle' })
 
   const abortRef = useRef<AbortController | null>(null)
 
@@ -87,6 +131,8 @@ export default function BreedingPage() {
     const nextP2Ability = p1Ability
     const nextP1Pokemon = p2Pokemon
     const nextP2Pokemon = p1Pokemon
+    const nextP1Config = p2Config
+    const nextP2Config = p1Config
 
     setP1Input(nextP1Input)
     setP2Input(nextP2Input)
@@ -94,7 +140,47 @@ export default function BreedingPage() {
     setP2Ability(nextP2Ability)
     setP1Pokemon(nextP1Pokemon)
     setP2Pokemon(nextP2Pokemon)
+    setP1Config(nextP1Config)
+    setP2Config(nextP2Config)
     setPrefillKey((k) => k + 1)
+  }
+
+  const breedAbortRef = useRef<AbortController | null>(null)
+
+  const handleBreed = async () => {
+    if (breedStatus.kind !== 'ready' || !breedStatus.canBreed) {
+      setOutcomeState({ kind: 'error', message: 'These parents cannot breed.' })
+      return
+    }
+    if (!p1Pokemon || !p2Pokemon || !p1SpeciesUrl || !p2SpeciesUrl) {
+      setOutcomeState({ kind: 'error', message: 'Load both parents first.' })
+      return
+    }
+
+    breedAbortRef.current?.abort()
+    const controller = new AbortController()
+    breedAbortRef.current = controller
+
+    setOutcomeState({ kind: 'loading' })
+
+    try {
+      // Legacy behavior: use Parent 2's species unless Parent 2 is Ditto.
+      const isP2Ditto = normalizePokemonName(p2Pokemon.name) === 'ditto'
+      const speciesUrlToUse = isP2Ditto ? p1SpeciesUrl : p2SpeciesUrl
+
+      const species = await getPokemonSpeciesByUrl(speciesUrlToUse, controller.signal)
+      const evo = await getEvolutionChainByUrl(species.evolution_chain.url, controller.signal)
+      const babyName = evo.chain.species.name
+
+      const outcome = breedOutcome(p1Config, p2Config, shinyOptions)
+      const babyPokemon = await getPokemon(babyName, controller.signal)
+
+      const spriteUrl = outcome.isShiny ? babyPokemon.sprites.front_shiny : babyPokemon.sprites.front_default
+      setOutcomeState({ kind: 'ready', babyName, spriteUrl, outcome })
+    } catch (e) {
+      if (controller.signal.aborted) return
+      setOutcomeState({ kind: 'error', message: e instanceof Error ? e.message : 'Failed to breed' })
+    }
   }
 
   const statusChip = (() => {
@@ -142,31 +228,92 @@ export default function BreedingPage() {
 
       <Grid container spacing={2}>
         <Grid size={{ xs: 12, md: 6 }}>
-          <ParentInputCard
-            title="Parent 1"
-            input={p1Input}
-            ability={p1Ability}
-            onChangeInput={setP1Input}
-            onChangeAbility={setP1Ability}
-            onLoaded={setP1Pokemon}
-            prefillKey={prefillKey}
-            prefillPokemon={p1Pokemon}
-          />
+          <Stack spacing={2}>
+            <ParentInputCard
+              title="Parent 1"
+              input={p1Input}
+              ability={p1Ability}
+              onChangeInput={setP1Input}
+              onChangeAbility={setP1Ability}
+              onLoaded={setP1Pokemon}
+              prefillKey={prefillKey}
+              prefillPokemon={p1Pokemon}
+            />
+
+            <ParentBreedingSettings value={p1Config} onChange={setP1Config} />
+          </Stack>
         </Grid>
 
         <Grid size={{ xs: 12, md: 6 }}>
-          <ParentInputCard
-            title="Parent 2"
-            input={p2Input}
-            ability={p2Ability}
-            onChangeInput={setP2Input}
-            onChangeAbility={setP2Ability}
-            onLoaded={setP2Pokemon}
-            prefillKey={prefillKey}
-            prefillPokemon={p2Pokemon}
-          />
+          <Stack spacing={2}>
+            <ParentInputCard
+              title="Parent 2"
+              input={p2Input}
+              ability={p2Ability}
+              onChangeInput={setP2Input}
+              onChangeAbility={setP2Ability}
+              onLoaded={setP2Pokemon}
+              prefillKey={prefillKey}
+              prefillPokemon={p2Pokemon}
+            />
+
+            <ParentBreedingSettings value={p2Config} onChange={setP2Config} />
+          </Stack>
         </Grid>
       </Grid>
+
+      <Paper variant="outlined" sx={{ p: 2 }}>
+        <Stack spacing={2}>
+          <Typography variant="h6">Breed</Typography>
+
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems={{ sm: 'center' }}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={shinyOptions.masuda}
+                  onChange={(e) => setShinyOptions((s) => ({ ...s, masuda: e.target.checked }))}
+                />
+              }
+              label="Masuda"
+            />
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={shinyOptions.shinyCharm}
+                  onChange={(e) => setShinyOptions((s) => ({ ...s, shinyCharm: e.target.checked }))}
+                />
+              }
+              label="Shiny charm"
+            />
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={shinyOptions.cyiniLuck}
+                  onChange={(e) => setShinyOptions((s) => ({ ...s, cyiniLuck: e.target.checked }))}
+                />
+              }
+              label="C'yini luck"
+            />
+
+            <Stack direction="row" spacing={1} sx={{ ml: { sm: 'auto' } }} alignItems="center">
+              <Button
+                variant="contained"
+                onClick={() => void handleBreed()}
+                disabled={breedStatus.kind !== 'ready' || !breedStatus.canBreed || outcomeState.kind === 'loading'}
+              >
+                Breed!
+              </Button>
+              {outcomeState.kind === 'loading' ? <CircularProgress size={20} /> : null}
+            </Stack>
+          </Stack>
+
+          {outcomeState.kind === 'error' ? (
+            <Typography color="warning.main">{outcomeState.message}</Typography>
+          ) : outcomeState.kind === 'ready' ? (
+            <OutcomeCard babyName={outcomeState.babyName} spriteUrl={outcomeState.spriteUrl} outcome={outcomeState.outcome} />
+          ) : null}
+        </Stack>
+      </Paper>
     </Stack>
   )
 }
