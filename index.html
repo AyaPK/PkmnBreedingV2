@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html>
+<title>Pokémon Breeding Simulator</title>
+
+<head>
+    <link rel="stylesheet" href="stylesheets/css.css" type="text/css">
+
+</head>
+
+<img class="headerimage" src="images/header.png" height="200px">
+
+<body background="images/bg.png">
+    <div>
+        <div class="bigbox">
+                
+            <div class="mainarea1">
+                ♂ Pokemon 1
+                <input id="pk1" onchange="search(this)">
+
+                <div>
+                    <img id="pkim1" src="images\default.png" width="100" height="100" />
+                </div>
+                
+                <table>
+                    <tr>
+                        <td>
+                            Ability
+                        </td>
+                        <td>
+                                <select id="abil1" align="right">
+                                    </select>
+                        </td>
+                        <th></th>
+                        <th>
+                            IV's
+                        </th>
+                    </tr>
+                    <tr>
+                        <td>
+                            Held item
+                        </td>
+                        <td>
+                            <select id="helditem1" align="right">
+                            </select>
+                        </td>
+                        <td>
+                            Atk
+                        </td>
+                        <td>
+                            <input maxlength="2" size="5" id="atk1" value="31">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Nature
+                        </td>
+                        <td>
+                            <select id="nature1" align="right">
+                            </select>
+                        </td>
+                        <td>
+                            Def
+                        </td>
+                        <td>
+                            <input maxlength="2" size="5" id="def1" value="31">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Move 1
+                        </td>
+                        <td>
+                            <select id="move1-1">
+                            </select>
+                        </td>
+                        <td>
+                            Sp Atk
+                        </td>
+                        <td>
+                            <input maxlength="2" size="5" id="spatk1" value="31">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Move 2
+                        </td>
+                        <td>
+                            <select id="move2-1">
+                            </select>
+                        </td>
+                        <td>
+                            Sp Def
+                        </td>
+                        <td>
+                            <input maxlength="2" size="5" id="spdef1" value="31">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Move 3
+                        </td>
+                        <td>
+                            <select id="move3-1">
+                            </select>
+                        </td>
+                        <td>
+                            Spe
+                        </td>
+                        <td>
+                            <input maxlength="2" size="5" id="spe1" value="31">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Move 4
+                        </td>
+                        <td>
+                            <select id="move4-1">
+                            </select>
+                        </td>
+                        <td>
+                            HP
+                        </td>
+                        <td>
+                            <input maxlength="2" size="5" id="hp1" value="31">
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+            
+            <div class="mainarea2">
+                ♀ Pokemon 2
+                <input id="pk2" onchange="search(this)">
+
+                </select>
+
+                <div>
+                    <img id="pkim2" src="images\default.png" width="100" height="100" />
+                </div>
+                <table>
+                        <tr>
+                                <td>
+                                    Ability
+                                </td>
+                                <td>
+                                        <select id="abil2" align="right">
+                                            </select>
+                                </td>
+                                <th></th>
+                                <th>
+                                    IV's
+                                </th>
+                            </tr>
+                    <tr>
+                        <td>
+                            Held item
+                        </td>
+                        <td>
+                            <select id="helditem2" align="right">
+                            </select>
+                        </td>
+                        <td>
+                            Atk
+                        </td>
+                        <td>
+                            <input maxlength="2" size="5" id="atk2" value="31">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Nature
+                        </td>
+                        <td>
+                            <select id="nature2" align="right">
+                            </select>
+                        </td>
+                        <td>
+                            Def
+                        </td>
+                        <td>
+                            <input maxlength="2" size="5" id="def2" value="31">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Move 1
+                        </td>
+                        <td>
+                            <select id="move1-2">
+                            </select>
+                        </td>
+                        <td>
+                            Sp Atk
+                        </td>
+                        <td>
+                            <input maxlength="2" size="5" id="spatk2" value="31">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Move 2
+                        </td>
+                        <td>
+                            <select id="move2-2">
+                            </select>
+                        </td>
+                        <td>
+                            Sp Def
+                        </td>
+                        <td>
+                            <input maxlength="2" size="5" id="spdef2" value="31">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Move 3
+                        </td>
+                        <td>
+                            <select id="move3-2">
+                            </select>
+                        </td>
+                        <td>
+                            Spe
+                        </td>
+                        <td>
+                            <input maxlength="2" size="5" id="spe2" value="31">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Move 4
+                        </td>
+                        <td>
+                            <select id="move4-2">
+                            </select>
+                        </td>
+                        <td>
+                            HP
+                        </td>
+                        <td>
+                            <input maxlength="2" size="5" id="hp2" value="31">
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="arrows">
+                    <button id="swap">-&gt; <br> &lt;-</button>
+                </div>
+            <div>
+                <div class="buttons">
+                    <table>
+                        <tr>
+                            <th>
+                                <h2>Extra options</h2>
+                            </th>
+                            <th>
+                                <h2>Simulations</h2>
+                            </th>
+                        </tr>
+                        <tr>
+                            <td> <input type="checkbox" id="masuda"> Masuda </td>
+                            <td> <input type="checkbox" id="shinysim"> Simulate Shiny Hunt</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" id="shinycharm"> Shiny charm </td>
+                            <td><input type="checkbox" id="hasim" onclick="return false;" disabled="disabled">HA</td>
+                        </tr>
+                        <tr>
+                                <td><input type="checkbox" id="cyini">C'yini Luck<p color="grey"></p>
+                                </td>
+                            <td><input type="checkbox" id="ivsim">Perfect IV's<p color="grey"></p>
+                            </td>
+                        </tr>
+                        <tr> </tr>
+
+                    </table>
+                    <p id="counter"></p>
+                </div>
+            </div>
+            <div>
+                <button id="breedbutton" class="breedbutton">Breed!</button>
+            </div>
+            <div>
+                <p id="breedstatus" class="breedsatus"></p>
+            </div>
+
+            <div class="output">
+                <table id="outputtable">
+                    <tr>
+                        <th colspan=2></th>
+                        <th colspan=2 id="outputspeciesname">
+                            <b>Species: </b>
+                        </th>
+                    </tr>
+                    <tr>
+                        <td rowspan=6>
+                            <img id="pkimout" src="images\default.png" width="250" height="250" />
+                        </td>
+                        <td>Nature</td>
+                        <td><input id="outputnature" size="15"></td>
+                        <td>Atk</td>
+                        <td>
+                            <input maxlength="2" size="5" id="atkout">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Ability</td>
+                        <td><input size="15" id="abilout"></td>
+                        <td>Def</td>
+                        <td>
+                            <input maxlength="2" size="5" id="defout">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Move 1</td>
+                        <td><input size="15" id="moveout1"></td>
+                        <td>Sp Atk</td>
+                        <td>
+                            <input maxlength="2" size="5" id="spatkout">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Move 2</td>
+                        <td><input size="15" id="moveout2"></td>
+                        <td>Sp Def</td>
+                        <td>
+                            <input maxlength="2" size="5" id="spdefout">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Move 3</td>
+                        <td><input size="15" id="moveout3"></td>
+                        <td>Spe</td>
+                        <td>
+                            <input maxlength="2" size="5" id="speout">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Move 4</td>
+                        <td><input size="15" id="moveout4"></td>
+                        <td>HP</td>
+                        <td>
+                            <input maxlength="2" size="5" id="hpout">
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+            <script src="scripts/js.js"></script>
+
+            
+        </div>
+
+        <div class="site-footer">
+                <p>Created by AyaPK</p>
+                <a href="FAQ.html">FAQs <br></a>
+                <br>
+                <a href='https://ko-fi.com/N4N11AHD2' target='_blank'><img height='36' style='border:0px;height:36px;'
+                        src='https://az743702.vo.msecnd.net/cdn/kofi5.png?v=2' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+                    
+                <br><a href="http://ayaspace.co.uk">Website | </a><a href="http://github.com/ayapk">github | </a>
+            
+                <a href="https://www.twitter.com/myrocketcat">twitter</a>
+            
+                <br> <br>
+                <a href="https://pokeapi.co/">Powered by PokéApi</a>
+                </div>
+    </div>
+
+    
+</body>
+<footer>
+</footer>
+
+</html>

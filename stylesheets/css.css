@@ -1,0 +1,122 @@
+
+
+div {
+    margin-top: 5px;
+    text-shadow: 2px 2px 4px #747474;
+}
+
+body {
+    background: url(../images/bg.png) no-repeat center center fixed;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+h1 {
+    margin: auto;
+}
+
+#pkim1, #pkim2{
+    border: inset;
+}
+
+#pkimout{
+    border: inset;
+}
+
+#outputspeciesname{
+    font-size: 20px;
+}
+
+
+.bigbox {
+    margin: auto;
+    float: center;
+    width: 1200px;
+}
+
+.mainarea1 {
+    border-radius: 15px;
+    padding: 8px;
+    box-shadow: 3px 7px #57575762;
+    background-image: linear-gradient(to bottom right, rgba(206, 207, 255, 0.233), rgba(53, 53, 53, 0.233));
+    margin-left: 15%;
+    float: left;
+    
+}
+
+.mainarea2 {
+    float: right;
+    margin-right: 15%;
+    border-radius: 15px;
+    padding: 8px;
+    box-shadow: 3px 7px #57575762;
+    background-image: linear-gradient(to bottom right, rgba(255, 206, 206, 0.233), rgba(53, 53, 53, 0.233));
+}
+
+.arrows {
+    width: 20px;;
+    height: 20px;
+    padding-top: 10%;
+    margin-left: 50%;
+    
+}
+
+
+
+.output {
+    border-radius: 15px;
+    padding: 8px;
+    box-shadow: 3px 7px #57575762;
+    background-image: linear-gradient(to bottom right, rgba(232, 253, 113, 0.233), rgba(53, 53, 53, 0.233));
+    float: left;
+    margin-left: 20%;
+}
+
+
+.output > table > tbody > tr > td{
+    padding-left: 20px;
+}
+
+
+.breedbutton {
+    float: center;
+    margin-left: 40%;
+    width: 200px;
+    clear: both;
+}
+
+.breedstatus {
+    float: center;
+    margin-left: 50%;
+    width: 500px;
+}
+
+.site-footer {
+    font-size: 20px;
+    float: right;
+    bottom: 0;
+    left: 0;
+    padding-bottom: 5px;
+    padding-left: 2px;
+  }
+
+  .buttons{
+    float: center;
+    margin-left: 37%;
+    clear: both;
+    max-width: 310px;
+    
+    
+  }
+
+  img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+.FAQ {
+    margin-left: 30%;
+    width: 40%;
+}
+ 
