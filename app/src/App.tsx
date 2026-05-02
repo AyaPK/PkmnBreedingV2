@@ -139,13 +139,22 @@ function BreedingApp() {
         background: 'linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)',
       }}
     >
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:px-4 focus:py-2 focus:bg-yellow-400 focus:text-gray-900 focus:rounded-lg focus:font-bold"
+      >
+        Skip to main content
+      </a>
+
       {/* Header */}
-      <div className="w-full flex flex-col items-center pt-8 pb-4 px-4">
-        <h1 className="text-4xl font-black text-white tracking-tight drop-shadow-lg">
+      <header className="w-full flex flex-col items-center pt-8 pb-4 px-4">
+        <h1 id="app-title" className="text-4xl font-black text-white tracking-tight drop-shadow-lg">
           Pokémon Breeding Simulator
         </h1>
         <p className="text-white/40 text-sm mt-1">Powered by PokéAPI</p>
-      </div>
+      </header>
+
+      <main id="main-content" aria-labelledby="app-title">
 
       {/* Parent panels */}
       <div className="flex flex-wrap justify-center items-start gap-4 px-4 pb-4">
@@ -190,6 +199,8 @@ function BreedingApp() {
       <div className="px-4 pb-12">
         <OffspringPanel result={result} incompatible={incompatible} />
       </div>
+
+      </main>
 
       {/* Footer */}
       <footer className="text-center text-white/30 text-xs pb-6 space-y-1">
