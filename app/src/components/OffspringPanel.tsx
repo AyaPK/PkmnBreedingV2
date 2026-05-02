@@ -15,7 +15,7 @@ export default function OffspringPanel({ result, incompatible }: Props) {
   if (!result && !incompatible) return null
 
   return (
-    <div className="rounded-2xl p-5 shadow-lg w-full max-w-2xl mx-auto" style={{ background: 'linear-gradient(135deg, rgba(42,184,200,0.12) 0%, rgba(13,42,58,0.8) 100%)', border: '1px solid rgba(42,184,200,0.25)' }}>
+    <div className="rounded-2xl p-5 shadow-lg w-full max-w-2xl mx-auto" style={{ background: 'linear-gradient(135deg, rgba(42,184,200,0.25) 0%, rgba(13,42,58,1) 100%)', border: '1px solid rgba(42,184,200,0.5)' }}>
       <div className="flex items-center gap-3 mb-4">
         <h2 className="text-xl font-bold" style={{ color: '#e8c84a' }}>
           {incompatible ? 'Incompatible Pair' : (

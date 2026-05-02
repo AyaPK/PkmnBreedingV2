@@ -15,7 +15,7 @@ export default function BreedControls({ options, onChange, onBreed, isBreeding, 
 
   return (
     <div className="flex flex-col items-center gap-4 py-4">
-      <div className="flex gap-8 rounded-2xl border px-8 py-4 shadow" style={{ background: 'rgba(13,42,58,0.7)', borderColor: 'rgba(42,184,200,0.2)' }}>
+      <div className="flex gap-8 rounded-2xl border px-8 py-4 shadow" style={{ background: 'rgba(13,42,58,1)', borderColor: 'rgba(42,184,200,0.5)' }}>
         <div className="flex flex-col gap-2">
           <span className="text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: '#2ab8c8' }}>Extra Options</span>
           <CheckRow label="Masuda Method" checked={options.masuda} onChange={set('masuda')} />

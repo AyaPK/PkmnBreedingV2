@@ -143,7 +143,11 @@ function BreedingApp() {
     <div
       className="min-h-screen w-full"
       style={{
-        background: 'linear-gradient(135deg, #05111f 0%, #0d2a3a 50%, #0a1e2e 100%)',
+        backgroundImage: 'url(/images/bg-dark.png)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed',
       }}
     >
       <a
@@ -154,12 +158,13 @@ function BreedingApp() {
       </a>
 
       {/* Header */}
-      <header className="w-full flex flex-col items-center pt-8 pb-4 px-4">
-        <h1 id="app-title" className="text-4xl font-black tracking-tight text-white"
-          style={{ textShadow: '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 0 8px rgba(224,48,16,0.4)' }}>
-          Pokémon Breeding Simulator
-        </h1>
-        <p className="text-white/40 text-sm mt-1">Powered by PokéAPI</p>
+      <header className="w-full flex flex-col items-center pt-4 pb-4 px-4" id="app-title">
+        <img
+          src="/images/header.png"
+          alt="Pokémon Breeding Simulator"
+          className="max-h-48 w-auto"
+        />
+        <p className="text-white/40 text-sm mt-2">Powered by PokéAPI</p>
       </header>
 
       <main id="main-content" aria-labelledby="app-title">
@@ -169,7 +174,7 @@ function BreedingApp() {
         <ParentPanel
           parentId={1}
           label="♂ Parent 1 (Male)"
-          accentClass="bg-gradient-to-br from-[#2ab8c8]/25 to-[#0d2a3a]/60 border border-[#2ab8c8]/30"
+          accentClass="bg-gradient-to-br from-[#2ab8c8]/50 to-[#0d2a3a]/100 border border-[#2ab8c8]/50"
           value={p1}
           onChange={setP1}
           pokemonNames={pokemonNames}
@@ -193,7 +198,7 @@ function BreedingApp() {
         <ParentPanel
           parentId={2}
           label="♀ Parent 2 (Female / Ditto)"
-          accentClass="bg-gradient-to-br from-[#e8c84a]/20 to-[#0d2a3a]/60 border border-[#e8c84a]/30"
+          accentClass="bg-gradient-to-br from-[#e8c84a]/40 to-[#0d2a3a]/100 border border-[#e8c84a]/50"
           value={p2}
           onChange={setP2}
           pokemonNames={pokemonNames}
