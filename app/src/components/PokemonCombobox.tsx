@@ -114,7 +114,10 @@ export default function PokemonCombobox({
           aria-controls={listboxId}
           aria-activedescendant={activeOptionId}
           aria-label={label}
-          className="w-full rounded-lg bg-white/10 border border-white/20 px-3 py-1.5 text-white placeholder:text-white/40 text-sm outline-none focus:border-white/50 pr-8"
+          className="w-full rounded-lg px-3 py-1.5 text-white placeholder:text-white/40 text-sm outline-none pr-8"
+          style={{ background: '#0d2a3a', border: '1px solid rgba(42,184,200,0.35)' }}
+          onFocus={e => { e.currentTarget.style.borderColor = 'rgba(42,184,200,0.8)'; if (suggestions.length > 0) setOpen(true) }}
+          onBlur={e => { e.currentTarget.style.borderColor = 'rgba(42,184,200,0.35)'; setTimeout(() => setOpen(false), 150) }}
           placeholder="e.g. pikachu"
           autoComplete="off"
           spellCheck={false}
@@ -125,13 +128,11 @@ export default function PokemonCombobox({
             setOpen(true)
             setActiveIdx(-1)
           }}
-          onFocus={() => { if (suggestions.length > 0) setOpen(true) }}
-          onBlur={() => setTimeout(() => setOpen(false), 150)}
           onKeyDown={handleKeyDown}
         />
         {loading && (
           <Loader2
-            className="absolute right-2 top-1/2 -translate-y-1/2 animate-spin text-white/50"
+            className="absolute right-2 top-1/2 -translate-y-1/2 animate-spin" style={{ color: '#2ab8c8' }}
             size={14}
             aria-hidden="true"
           />
@@ -145,7 +146,7 @@ export default function PokemonCombobox({
           id={listboxId}
           role="listbox"
           aria-label={`Pokémon suggestions for ${label}`}
-          className="absolute top-full left-0 right-0 z-50 mt-1 rounded-lg border border-white/20 bg-[#1e1b3a] shadow-xl overflow-y-auto max-h-48"
+          className="absolute top-full left-0 right-0 z-50 mt-1 rounded-lg shadow-xl overflow-y-auto max-h-48" style={{ background: '#071a26', border: '1px solid rgba(42,184,200,0.35)' }}
         >
           {suggestions.map((name, idx) => (
             <li
@@ -153,11 +154,11 @@ export default function PokemonCombobox({
               id={`${listboxId}-opt-${idx}`}
               role="option"
               aria-selected={idx === activeIdx}
-              className={`px-3 py-2 text-sm cursor-pointer capitalize transition-colors
-                ${idx === activeIdx
-                  ? 'bg-yellow-400/20 text-yellow-200'
-                  : 'text-white/80 hover:bg-white/10'
-                }`}
+              className="px-3 py-2 text-sm cursor-pointer capitalize transition-colors"
+              style={idx === activeIdx
+                ? { background: 'rgba(232,200,74,0.2)', color: '#e8c84a' }
+                : { color: 'rgba(255,255,255,0.8)' }
+              }
               onMouseDown={() => commit(name)}
               onMouseEnter={() => setActiveIdx(idx)}
             >

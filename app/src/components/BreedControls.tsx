@@ -15,16 +15,16 @@ export default function BreedControls({ options, onChange, onBreed, isBreeding, 
 
   return (
     <div className="flex flex-col items-center gap-4 py-4">
-      <div className="flex gap-8 rounded-2xl bg-white/5 border border-white/10 px-8 py-4 shadow">
+      <div className="flex gap-8 rounded-2xl border px-8 py-4 shadow" style={{ background: 'rgba(13,42,58,0.7)', borderColor: 'rgba(42,184,200,0.2)' }}>
         <div className="flex flex-col gap-2">
-          <span className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-1">Extra Options</span>
+          <span className="text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: '#2ab8c8' }}>Extra Options</span>
           <CheckRow label="Masuda Method" checked={options.masuda} onChange={set('masuda')} />
           <CheckRow label="Shiny Charm" checked={options.shinyCharm} onChange={set('shinyCharm')} />
           <CheckRow label="C'yini Luck 🍀" checked={options.cyini} onChange={set('cyini')} />
         </div>
         <div className="w-px bg-white/10" />
         <div className="flex flex-col gap-2">
-          <span className="text-xs font-semibold text-white/50 uppercase tracking-wider mb-1">Simulations</span>
+          <span className="text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: '#2ab8c8' }}>Simulations</span>
           <CheckRow label="Simulate Shiny Hunt" checked={options.shinySim} onChange={set('shinySim')} />
           <CheckRow label="Simulate Perfect IVs" checked={options.ivSim} onChange={set('ivSim')} />
         </div>
@@ -34,8 +34,8 @@ export default function BreedControls({ options, onChange, onBreed, isBreeding, 
         onClick={onBreed}
         disabled={!canBreed || isBreeding}
         className="flex items-center gap-2 px-10 py-3 rounded-full text-lg font-bold shadow-lg
-          bg-gradient-to-r from-yellow-400 to-orange-400 text-gray-900
-          hover:from-yellow-300 hover:to-orange-300 active:scale-95
+          bg-gradient-to-r from-[#e03010] via-[#e8c84a] to-[#2ab8c8] text-white
+          hover:from-[#f04020] hover:via-[#f0d45a] hover:to-[#3ac8d8] active:scale-95
           disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150"
       >
         <Egg size={22} />
@@ -60,7 +60,7 @@ function CheckRow({
         type="checkbox"
         checked={checked}
         onChange={onChange}
-        className="w-4 h-4 accent-yellow-400"
+        className="w-4 h-4 accent-[#2ab8c8]"
       />
       {label}
     </label>

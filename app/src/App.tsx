@@ -143,19 +143,20 @@ function BreedingApp() {
     <div
       className="min-h-screen w-full"
       style={{
-        background: 'linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)',
+        background: 'linear-gradient(135deg, #05111f 0%, #0d2a3a 50%, #0a1e2e 100%)',
       }}
     >
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:px-4 focus:py-2 focus:bg-yellow-400 focus:text-gray-900 focus:rounded-lg focus:font-bold"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:px-4 focus:py-2 focus:bg-[#e8c84a] focus:text-[#0d1b2a] focus:rounded-lg focus:font-bold"
       >
         Skip to main content
       </a>
 
       {/* Header */}
       <header className="w-full flex flex-col items-center pt-8 pb-4 px-4">
-        <h1 id="app-title" className="text-4xl font-black text-white tracking-tight drop-shadow-lg">
+        <h1 id="app-title" className="text-4xl font-black tracking-tight text-white"
+          style={{ textShadow: '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 0 8px rgba(224,48,16,0.4)' }}>
           Pokémon Breeding Simulator
         </h1>
         <p className="text-white/40 text-sm mt-1">Powered by PokéAPI</p>
@@ -168,7 +169,7 @@ function BreedingApp() {
         <ParentPanel
           parentId={1}
           label="♂ Parent 1 (Male)"
-          accentClass="bg-gradient-to-br from-blue-600/30 to-indigo-900/40 border border-blue-400/20"
+          accentClass="bg-gradient-to-br from-[#2ab8c8]/25 to-[#0d2a3a]/60 border border-[#2ab8c8]/30"
           value={p1}
           onChange={setP1}
           pokemonNames={pokemonNames}
@@ -178,7 +179,10 @@ function BreedingApp() {
         <div className="flex items-center justify-center self-center">
           <button
             onClick={handleSwap}
-            className="p-3 rounded-full bg-white/10 border border-white/20 text-white hover:bg-white/20 active:scale-95 transition-all"
+            className="p-3 rounded-full text-white active:scale-95 transition-all hover:scale-110"
+            style={{ background: 'rgba(224,48,16,0.15)', border: '1px solid rgba(224,48,16,0.4)' }}
+            onMouseEnter={e => (e.currentTarget.style.background = 'rgba(224,48,16,0.3)')}
+            onMouseLeave={e => (e.currentTarget.style.background = 'rgba(224,48,16,0.15)')}
             aria-label="Swap parents"
             title="Swap parents"
           >
@@ -189,7 +193,7 @@ function BreedingApp() {
         <ParentPanel
           parentId={2}
           label="♀ Parent 2 (Female / Ditto)"
-          accentClass="bg-gradient-to-br from-pink-600/30 to-rose-900/40 border border-pink-400/20"
+          accentClass="bg-gradient-to-br from-[#e8c84a]/20 to-[#0d2a3a]/60 border border-[#e8c84a]/30"
           value={p2}
           onChange={setP2}
           pokemonNames={pokemonNames}

@@ -99,7 +99,8 @@ export default function ParentPanel({ parentId, label, accentClass, value, onCha
   return (
     <div className={`rounded-2xl p-4 shadow-lg ${accentClass} w-[580px]`}>
       {/* Panel heading */}
-      <div className="text-sm font-bold text-white/90 mb-3" id={`panel-heading-${pid}`}>{label}</div>
+      <div className="text-sm font-bold mb-3 text-white" id={`panel-heading-${pid}`}
+        style={{ textShadow: '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000' }}>{label}</div>
 
       <div className="flex gap-4">
         {/* ── Left column: sprite + search + dropdowns ── */}
@@ -167,9 +168,9 @@ export default function ParentPanel({ parentId, label, accentClass, value, onCha
         </div>
 
         {/* ── Right column: moves + IVs ── */}
-        <div className="flex flex-col gap-2 flex-1 border-l border-white/10 pl-4">
+        <div className="flex flex-col gap-2 flex-1 border-l border-[#2ab8c8]/20 pl-4">
           {/* Moves */}
-          <div className="text-xs text-white/50 uppercase tracking-wider" aria-hidden="true">Moves</div>
+          <div className="col-span-2 text-xs uppercase tracking-wider" style={{ color: '#2ab8c8' }} aria-hidden="true">Moves</div>
           <div className="grid grid-cols-2 gap-2">
             {([0, 1, 2, 3] as const).map(idx => {
               const moveId = `move${idx + 1}-${pid}`
@@ -194,7 +195,7 @@ export default function ParentPanel({ parentId, label, accentClass, value, onCha
           </div>
 
           {/* IVs */}
-          <div className="text-xs text-white/50 uppercase tracking-wider mt-1" aria-hidden="true">IVs</div>
+          <div className="text-xs uppercase tracking-wider mt-1" style={{ color: '#2ab8c8' }} aria-hidden="true">IVs</div>
           <div className="grid grid-cols-3 gap-x-2 gap-y-1.5">
             {IV_STATS.map(stat => {
               const ivId = `iv-${stat}-${pid}`
@@ -232,6 +233,6 @@ function Row({ label, htmlFor, children }: { label: string; htmlFor: string; chi
 }
 
 const selectClass =
-  'flex-1 w-full rounded-lg bg-[#2a2550] border border-white/20 px-2 py-1.5 text-white text-xs outline-none focus:border-white/50 cursor-pointer'
+  'flex-1 w-full rounded-lg bg-[#0d2a3a] border border-[#2ab8c8]/30 px-2 py-1.5 text-white text-xs outline-none focus:border-[#2ab8c8]/70 cursor-pointer'
 
 export { DEFAULT_PARENT, DEFAULT_IVS }
