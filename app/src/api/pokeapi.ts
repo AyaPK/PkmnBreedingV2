@@ -33,12 +33,33 @@ async function apiFetch<T>(url: string): Promise<T> {
   return res.json() as Promise<T>
 }
 
+export interface NameListData {
+  results: Array<{ name: string }>
+}
+
+export async function fetchPokemonNameList(): Promise<string[]> {
+  const data = await apiFetch<NameListData>(`${BASE}/pokemon?limit=2000`)
+  return data.results.map(r => r.name)
+}
+
 export async function fetchPokemon(name: string): Promise<PokemonData> {
   return apiFetch<PokemonData>(`${BASE}/pokemon/${name.toLowerCase().trim()}`)
 }
 
+const REGIONAL_SUFFIXES = ['-alola', '-galar', '-hisui', '-paldea']
+
 export async function fetchSpecies(name: string): Promise<SpeciesData> {
-  return apiFetch<SpeciesData>(`${BASE}/pokemon-species/${name.toLowerCase().trim()}`)
+  const normalized = name.toLowerCase().trim()
+  try {
+    return await apiFetch<SpeciesData>(`${BASE}/pokemon-species/${normalized}`)
+  } catch {
+    const suffix = REGIONAL_SUFFIXES.find(s => normalized.endsWith(s))
+    if (suffix) {
+      const baseName = normalized.slice(0, -suffix.length)
+      return apiFetch<SpeciesData>(`${BASE}/pokemon-species/${baseName}`)
+    }
+    throw new Error(`Species not found: ${normalized}`)
+  }
 }
 
 export async function fetchEvolutionChain(url: string): Promise<EvolutionChainData> {

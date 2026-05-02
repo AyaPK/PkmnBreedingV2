@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query'
 import { ArrowLeftRight } from 'lucide-react'
 import ParentPanel, { DEFAULT_PARENT } from './components/ParentPanel'
 import BreedControls from './components/BreedControls'
@@ -12,6 +12,7 @@ import { shinySimulate, rollShiny } from './lib/shinyCalc'
 import {
   fetchEvolutionChain,
   fetchPokemon,
+  fetchPokemonNameList,
   formatAbilities,
   getBabyMoves,
 } from './api/pokeapi'
@@ -38,6 +39,12 @@ function BreedingApp() {
   const [result, setResult] = useState<BreedResult | null>(null)
   const [incompatible, setIncompatible] = useState(false)
   const [isBreeding, setIsBreeding] = useState(false)
+
+  const { data: pokemonNames = [] } = useQuery({
+    queryKey: ['pokemon-names'],
+    queryFn: fetchPokemonNameList,
+    staleTime: Infinity,
+  })
 
   const canBreed = Boolean(p1.evoChainUrl || p1.name) && Boolean(p2.evoChainUrl || p2.name)
 
@@ -164,6 +171,7 @@ function BreedingApp() {
           accentClass="bg-gradient-to-br from-blue-600/30 to-indigo-900/40 border border-blue-400/20"
           value={p1}
           onChange={setP1}
+          pokemonNames={pokemonNames}
         />
 
         {/* Swap button */}
@@ -183,6 +191,7 @@ function BreedingApp() {
           accentClass="bg-gradient-to-br from-pink-600/30 to-rose-900/40 border border-pink-400/20"
           value={p2}
           onChange={setP2}
+          pokemonNames={pokemonNames}
         />
       </div>
 

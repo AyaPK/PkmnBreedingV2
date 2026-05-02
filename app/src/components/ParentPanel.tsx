@@ -1,8 +1,9 @@
 import { useState, useCallback } from 'react'
-import { Loader2, AlertCircle } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 import { fetchPokemon, fetchSpecies, formatAbilities, formatMoves } from '../api/pokeapi'
 import { HELD_ITEMS, NATURES, IV_STATS } from '../lib/constants'
 import type { ParentState } from '../lib/types'
+import PokemonCombobox from './PokemonCombobox'
 
 const DEFAULT_IVS = Object.fromEntries(IV_STATS.map(s => [s, '31'])) as ParentState['ivs']
 
@@ -25,10 +26,10 @@ interface Props {
   accentClass: string
   value: ParentState
   onChange: (state: ParentState) => void
+  pokemonNames: string[]
 }
 
-export default function ParentPanel({ parentId, label, accentClass, value, onChange }: Props) {
-  const [inputVal, setInputVal] = useState(value.name)
+export default function ParentPanel({ parentId, label, accentClass, value, onChange, pokemonNames }: Props) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -99,31 +100,21 @@ export default function ParentPanel({ parentId, label, accentClass, value, onCha
     <div className={`rounded-2xl p-4 shadow-lg ${accentClass} flex flex-col gap-3 w-[340px]`}>
       <div className="text-lg font-bold text-white/90" id={`panel-heading-${pid}`}>{label}</div>
 
-      {/* Search */}
-      <div className="flex flex-col gap-1">
-        <label htmlFor={`pk${pid}`} className="text-white/70 text-xs">
-          Pokémon Name
-        </label>
-        <input
-          id={`pk${pid}`}
-          className="flex-1 rounded-lg bg-white/10 border border-white/20 px-3 py-1.5 text-white placeholder:text-white/40 text-sm outline-none focus:border-white/50"
-          placeholder="e.g. pikachu"
-          value={inputVal}
-          onChange={e => setInputVal(e.target.value)}
-          onBlur={e => handleSearch(e.target.value)}
-          onKeyDown={e => { if (e.key === 'Enter') handleSearch(inputVal) }}
-        />
-      </div>
+      {/* Search combobox */}
+      <PokemonCombobox
+        id={`pk${pid}`}
+        label="Pokémon Name"
+        value={value.name}
+        pokemonNames={pokemonNames}
+        loading={loading}
+        error={error}
+        onCommit={handleSearch}
+      />
 
       {/* Sprite */}
       <div className="flex justify-center items-center h-28 bg-black/20 rounded-xl border border-white/10">
         {loading ? (
           <Loader2 className="animate-spin text-white/60" size={36} aria-label="Loading Pokémon data" />
-        ) : error ? (
-          <div className="flex flex-col items-center gap-1 text-red-300 text-xs" role="alert">
-            <AlertCircle size={28} aria-hidden="true" />
-            <span>{error}</span>
-          </div>
         ) : value.sprite ? (
           <img src={value.sprite} alt={`${value.name} sprite`} className="w-24 h-24 object-contain" style={{ imageRendering: 'pixelated' }} />
         ) : (
@@ -232,6 +223,6 @@ function Row({ label, htmlFor, children }: { label: string; htmlFor: string; chi
 }
 
 const selectClass =
-  'flex-1 w-full rounded-lg bg-white/10 border border-white/20 px-2 py-1.5 text-white text-xs outline-none focus:border-white/50 cursor-pointer'
+  'flex-1 w-full rounded-lg bg-[#2a2550] border border-white/20 px-2 py-1.5 text-white text-xs outline-none focus:border-white/50 cursor-pointer'
 
 export { DEFAULT_PARENT, DEFAULT_IVS }
