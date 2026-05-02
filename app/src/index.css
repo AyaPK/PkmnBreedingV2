@@ -1,15 +1,11 @@
-html,
-body {
-  height: 100%;
+@import "tailwindcss";
+
+* {
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  background-image: url('/images/bg.png');
-  background-repeat: repeat;
-  background-attachment: fixed;
-}
-
-code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }

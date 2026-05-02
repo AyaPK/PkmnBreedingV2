@@ -1,58 +1,211 @@
-import CatchingPokemonIcon from '@mui/icons-material/CatchingPokemon'
-import { AppBar, Box, Button, Container, Toolbar, Typography } from '@mui/material'
-import BreedingPage from './features/breeding/BreedingPage'
-import './App.css'
+import { useState } from 'react'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ArrowLeftRight } from 'lucide-react'
+import ParentPanel, { DEFAULT_PARENT } from './components/ParentPanel'
+import BreedControls from './components/BreedControls'
+import OffspringPanel from './components/OffspringPanel'
+import { isBreedable } from './lib/breedingLogic'
+import { getIVs } from './lib/ivCalc'
+import { natureCalc } from './lib/natureCalc'
+import { abilityCalc } from './lib/abilityCalc'
+import { shinySimulate, rollShiny } from './lib/shinyCalc'
+import {
+  fetchEvolutionChain,
+  fetchPokemon,
+  formatAbilities,
+  getBabyMoves,
+} from './api/pokeapi'
+import type { ParentState, BreedOptions, BreedResult } from './lib/types'
 
-function App() {
+const queryClient = new QueryClient()
+
+const makeDefault = (name = ''): ParentState => ({
+  ...DEFAULT_PARENT,
+  name,
+  ivs: { atk: '31', def: '31', spatk: '31', spdef: '31', hp: '31', spe: '31' },
+})
+
+function BreedingApp() {
+  const [p1, setP1] = useState<ParentState>(makeDefault())
+  const [p2, setP2] = useState<ParentState>(makeDefault())
+  const [options, setOptions] = useState<BreedOptions>({
+    masuda: false,
+    shinyCharm: false,
+    cyini: false,
+    shinySim: false,
+    ivSim: false,
+  })
+  const [result, setResult] = useState<BreedResult | null>(null)
+  const [incompatible, setIncompatible] = useState(false)
+  const [isBreeding, setIsBreeding] = useState(false)
+
+  const canBreed = Boolean(p1.evoChainUrl || p1.name) && Boolean(p2.evoChainUrl || p2.name)
+
+  const handleSwap = () => {
+    setP1(p2)
+    setP2(p1)
+    setResult(null)
+    setIncompatible(false)
+  }
+
+  const handleBreed = async () => {
+    if (isBreeding) return
+    setIsBreeding(true)
+    setResult(null)
+    setIncompatible(false)
+
+    try {
+      const breedable = isBreedable(p1.eggGroups, p2.eggGroups, p1.name, p2.name)
+      if (!breedable) {
+        setIncompatible(true)
+        setIsBreeding(false)
+        return
+      }
+
+      // Determine baby species from the female (p2) evo chain, or male (p1) if p2 is Ditto
+      const chainUrl = p2.name.toLowerCase() === 'ditto' ? p1.evoChainUrl : p2.evoChainUrl
+      const chainData = await fetchEvolutionChain(chainUrl)
+      const babyName = chainData.chain.species.name
+
+      // Fetch baby data for sprite + abilities + moves
+      const babyData = await fetchPokemon(babyName)
+      const babyAbilities = formatAbilities(babyData.abilities)
+
+      // Source parent for ability is female (p2), unless p2 is Ditto → use p1
+      const abilitySourceParent = p2.name.toLowerCase() === 'ditto' ? p1 : p2
+      const resultAbility = abilityCalc(babyAbilities, abilitySourceParent.selectedAbility)
+
+      // Nature
+      const resultNature = natureCalc(p1.nature, p2.nature, p1.heldItem, p2.heldItem)
+
+      // IVs
+      const { ivs: resultIVs, eggsHatched: ivEggs } = await getIVs(p1, p2, options.ivSim)
+
+      // Shiny
+      let isShiny = false
+      let shinyEggs = 0
+      if (options.shinySim) {
+        const shinyRes = await shinySimulate({
+          masuda: options.masuda,
+          shinyCharm: options.shinyCharm,
+          cyini: options.cyini,
+        })
+        isShiny = shinyRes.isShiny
+        shinyEggs = shinyRes.eggsHatched
+      } else {
+        isShiny = rollShiny({
+          masuda: options.masuda,
+          shinyCharm: options.shinyCharm,
+          cyini: options.cyini,
+        })
+      }
+
+      // Moves
+      const babyMovesRaw = getBabyMoves(babyData.moves)
+      const babyMoves: [string, string, string, string] = [
+        babyMovesRaw[0] ?? '',
+        babyMovesRaw[1] ?? '',
+        babyMovesRaw[2] ?? '',
+        babyMovesRaw[3] ?? '',
+      ]
+
+      const sprite = isShiny
+        ? (babyData.sprites.front_shiny ?? babyData.sprites.front_default)
+        : babyData.sprites.front_default
+
+      const eggsHatched = ivEggs === -1 ? -1 : ivEggs + shinyEggs
+
+      setResult({
+        species: babyName,
+        sprite,
+        isShiny,
+        nature: resultNature,
+        ability: resultAbility,
+        moves: babyMoves,
+        ivs: resultIVs,
+        eggsHatched,
+      })
+    } catch (err) {
+      console.error('Breed error:', err)
+    } finally {
+      setIsBreeding(false)
+    }
+  }
+
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: 'background.default', color: 'text.primary' }}>
-      <Box
-        sx={{
-          height: { xs: 96, sm: 120 },
-          width: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          py: 1,
-        }}
-      >
-        <Box
-          component="img"
-          src="/images/header.png"
-          alt="Pokémon Breeding Simulator"
-          sx={{
-            height: '120%',
-            width: 'auto',
-            maxWidth: '100%',
-            objectFit: 'contain',
-            display: 'block',
-          }}
+    <div
+      className="min-h-screen w-full"
+      style={{
+        background: 'linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)',
+      }}
+    >
+      {/* Header */}
+      <div className="w-full flex flex-col items-center pt-8 pb-4 px-4">
+        <h1 className="text-4xl font-black text-white tracking-tight drop-shadow-lg">
+          Pokémon Breeding Simulator
+        </h1>
+        <p className="text-white/40 text-sm mt-1">Powered by PokéAPI</p>
+      </div>
+
+      {/* Parent panels */}
+      <div className="flex flex-wrap justify-center items-start gap-4 px-4 pb-4">
+        <ParentPanel
+          parentId={1}
+          label="♂ Parent 1 (Male)"
+          accentClass="bg-gradient-to-br from-blue-600/30 to-indigo-900/40 border border-blue-400/20"
+          value={p1}
+          onChange={setP1}
         />
-      </Box>
 
-      <AppBar position="sticky" color="transparent" elevation={0}>
-        <Toolbar>
-          <CatchingPokemonIcon sx={{ mr: 1 }} />
-          <Typography variant="h6" sx={{ flex: 1 }}>
-            Pokémon Breeding Simulator
-          </Typography>
-          <Button
-            color="inherit"
-            component="a"
-            href="https://pokeapi.co/"
-            target="_blank"
-            rel="noreferrer"
+        {/* Swap button */}
+        <div className="flex items-center justify-center self-center">
+          <button
+            onClick={handleSwap}
+            className="p-3 rounded-full bg-white/10 border border-white/20 text-white hover:bg-white/20 active:scale-95 transition-all"
+            title="Swap parents"
           >
-            Powered by PokeAPI
-          </Button>
-        </Toolbar>
-      </AppBar>
+            <ArrowLeftRight size={20} />
+          </button>
+        </div>
 
-      <Container sx={{ py: 3 }} maxWidth="lg">
-        <BreedingPage />
-      </Container>
-    </Box>
+        <ParentPanel
+          parentId={2}
+          label="♀ Parent 2 (Female / Ditto)"
+          accentClass="bg-gradient-to-br from-pink-600/30 to-rose-900/40 border border-pink-400/20"
+          value={p2}
+          onChange={setP2}
+        />
+      </div>
+
+      {/* Breed controls */}
+      <BreedControls
+        options={options}
+        onChange={setOptions}
+        onBreed={handleBreed}
+        isBreeding={isBreeding}
+        canBreed={canBreed}
+      />
+
+      {/* Output */}
+      <div className="px-4 pb-12">
+        <OffspringPanel result={result} incompatible={incompatible} />
+      </div>
+
+      {/* Footer */}
+      <footer className="text-center text-white/30 text-xs pb-6 space-y-1">
+        <div>Created by AyaPK</div>
+        <div>
+          <a href="https://pokeapi.co/" className="underline hover:text-white/60">Powered by PokéAPI</a>
+        </div>
+      </footer>
+    </div>
   )
 }
 
-export default App
+export default function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <BreedingApp />
+    </QueryClientProvider>
+  )
+}

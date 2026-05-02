@@ -1,122 +1,65 @@
-export type NamedAPIResource = {
+const BASE = 'https://pokeapi.co/api/v2'
+
+export interface PokemonData {
   name: string
-  url: string
-}
-
-export type PokemonAbility = {
-  ability: NamedAPIResource
-  is_hidden: boolean
-  slot: number
-}
-
-export type PokemonSprites = {
-  front_default: string | null
-  front_shiny: string | null
-}
-
-export type PokemonMove = {
-  move: NamedAPIResource
-}
-
-export type Pokemon = {
-  id: number
-  name: string
-  abilities: PokemonAbility[]
-  sprites: PokemonSprites
-  moves: PokemonMove[]
-  species: NamedAPIResource
-}
-
-export type PokemonSpecies = {
-  egg_groups: NamedAPIResource[]
-  evolution_chain: {
-    url: string
+  sprites: {
+    front_default: string | null
+    front_shiny: string | null
   }
-}
-
-export type PokemonListResponse = {
-  results: Array<{
-    name: string
-    url: string
+  abilities: Array<{
+    ability: { name: string }
+    is_hidden: boolean
+  }>
+  moves: Array<{
+    move: { name: string }
+    version_group_details: Array<{ level_learned_at: number }>
   }>
 }
 
-export type EvolutionChain = {
+export interface SpeciesData {
+  egg_groups: Array<{ name: string }>
+  evolution_chain: { url: string }
+}
+
+export interface EvolutionChainData {
   chain: {
-    species: NamedAPIResource
+    species: { name: string }
   }
 }
 
-export function normalizePokemonName(input: string): string {
-  return input.trim().toLowerCase().replace(/\s+/g, '-')
+async function apiFetch<T>(url: string): Promise<T> {
+  const res = await fetch(url)
+  if (!res.ok) throw new Error(`PokeAPI error: ${res.status}`)
+  return res.json() as Promise<T>
 }
 
-async function fetchJson<T>(url: string, signal?: AbortSignal): Promise<T> {
-  const res = await fetch(url, { signal })
-  if (!res.ok) {
-    throw new Error(`Request failed (${res.status}) for ${url}`)
-  }
-  return (await res.json()) as T
+export async function fetchPokemon(name: string): Promise<PokemonData> {
+  return apiFetch<PokemonData>(`${BASE}/pokemon/${name.toLowerCase().trim()}`)
 }
 
-const API_BASE = 'https://pokeapi.co/api/v2'
-
-const POKEMON_NAME_LIST_CACHE_KEY = 'pokeapi:pokemon-name-list:v1'
-let pokemonNameListCache: string[] | null = null
-let pokemonNameListPromise: Promise<string[]> | null = null
-
-export async function getPokemon(nameOrId: string, signal?: AbortSignal): Promise<Pokemon> {
-  const key = normalizePokemonName(nameOrId)
-  return fetchJson<Pokemon>(`${API_BASE}/pokemon/${encodeURIComponent(key)}`, signal)
+export async function fetchSpecies(name: string): Promise<SpeciesData> {
+  return apiFetch<SpeciesData>(`${BASE}/pokemon-species/${name.toLowerCase().trim()}`)
 }
 
-export async function getPokemonSpecies(
-  nameOrId: string,
-  signal?: AbortSignal,
-): Promise<PokemonSpecies> {
-  const key = normalizePokemonName(nameOrId)
-  return fetchJson<PokemonSpecies>(`${API_BASE}/pokemon-species/${encodeURIComponent(key)}`, signal)
+export async function fetchEvolutionChain(url: string): Promise<EvolutionChainData> {
+  return apiFetch<EvolutionChainData>(url)
 }
 
-export async function getPokemonSpeciesByUrl(url: string, signal?: AbortSignal): Promise<PokemonSpecies> {
-  return fetchJson<PokemonSpecies>(url, signal)
+export function formatAbilities(
+  abilities: PokemonData['abilities']
+): string[] {
+  return abilities.map(a =>
+    a.is_hidden ? `${a.ability.name} (h)` : a.ability.name
+  )
 }
 
-export async function getEvolutionChainByUrl(url: string, signal?: AbortSignal): Promise<EvolutionChain> {
-  return fetchJson<EvolutionChain>(url, signal)
+export function formatMoves(moves: PokemonData['moves']): string[] {
+  return moves.map(m => m.move.name)
 }
 
-export async function getPokemonNameList(signal?: AbortSignal): Promise<string[]> {
-  if (pokemonNameListCache) return pokemonNameListCache
-
-  const cachedRaw = localStorage.getItem(POKEMON_NAME_LIST_CACHE_KEY)
-  if (cachedRaw) {
-    try {
-      const parsed = JSON.parse(cachedRaw) as unknown
-      if (Array.isArray(parsed) && parsed.every((x) => typeof x === 'string')) {
-        pokemonNameListCache = parsed
-        return parsed
-      }
-    } catch {
-      // ignore
-    }
-  }
-
-  if (!pokemonNameListPromise) {
-    pokemonNameListPromise = (async () => {
-      const data = await fetchJson<PokemonListResponse>(`${API_BASE}/pokemon?limit=100000&offset=0`, signal)
-      const names = data.results.map((r) => r.name)
-      pokemonNameListCache = names
-      try {
-        localStorage.setItem(POKEMON_NAME_LIST_CACHE_KEY, JSON.stringify(names))
-      } catch {
-        // ignore
-      }
-      return names
-    })().finally(() => {
-      pokemonNameListPromise = null
-    })
-  }
-
-  return pokemonNameListPromise
+export function getBabyMoves(moves: PokemonData['moves']): string[] {
+  return moves
+    .filter(m => m.version_group_details[0]?.level_learned_at === 1)
+    .map(m => m.move.name)
+    .slice(0, 4)
 }
