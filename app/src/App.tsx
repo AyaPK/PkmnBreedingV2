@@ -164,7 +164,7 @@ function BreedingApp() {
       <main id="main-content" aria-labelledby="app-title">
 
       {/* Parent panels */}
-      <div className="flex flex-wrap justify-center items-start gap-4 px-4 pb-4">
+      <div className="flex flex-nowrap justify-center items-start gap-3 px-4 pb-4">
         <ParentPanel
           parentId={1}
           label="♂ Parent 1 (Male)"
@@ -179,9 +179,10 @@ function BreedingApp() {
           <button
             onClick={handleSwap}
             className="p-3 rounded-full bg-white/10 border border-white/20 text-white hover:bg-white/20 active:scale-95 transition-all"
+            aria-label="Swap parents"
             title="Swap parents"
           >
-            <ArrowLeftRight size={20} />
+            <ArrowLeftRight size={20} aria-hidden="true" />
           </button>
         </div>
 
