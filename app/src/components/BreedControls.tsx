@@ -15,14 +15,14 @@ export default function BreedControls({ options, onChange, onBreed, isBreeding, 
 
   return (
     <div className="flex flex-col items-center gap-4 py-4">
-      <div className="flex gap-8 rounded-2xl border px-8 py-4 shadow" style={{ background: 'rgba(13,42,58,1)', borderColor: 'rgba(42,184,200,0.5)' }}>
+      <div className="flex flex-col sm:flex-row gap-6 sm:gap-8 rounded-2xl border px-6 sm:px-8 py-4 shadow w-full max-w-xl" style={{ background: 'rgba(13,42,58,1)', borderColor: 'rgba(42,184,200,0.5)' }}>
         <div className="flex flex-col gap-2">
           <span className="text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: '#2ab8c8' }}>Extra Options</span>
           <CheckRow label="Masuda Method" checked={options.masuda} onChange={set('masuda')} />
           <CheckRow label="Shiny Charm" checked={options.shinyCharm} onChange={set('shinyCharm')} />
           <CheckRow label="C'yini Luck 🍀" checked={options.cyini} onChange={set('cyini')} />
         </div>
-        <div className="w-px bg-white/10" />
+        <div className="w-full h-px sm:w-px sm:h-auto bg-white/10" />
         <div className="flex flex-col gap-2">
           <span className="text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: '#2ab8c8' }}>Simulations</span>
           <CheckRow label="Simulate Shiny Hunt" checked={options.shinySim} onChange={set('shinySim')} />

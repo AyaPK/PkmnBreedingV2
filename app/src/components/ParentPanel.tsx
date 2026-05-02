@@ -97,16 +97,16 @@ export default function ParentPanel({ parentId, label, accentClass, value, onCha
   const pid = parentId
 
   return (
-    <div className={`rounded-2xl p-4 shadow-lg ${accentClass} w-[580px]`}>
+    <div className={`rounded-2xl p-4 shadow-lg ${accentClass} w-full lg:w-[580px]`}>
       {/* Panel heading */}
       <div className="text-sm font-bold mb-3 text-white" id={`panel-heading-${pid}`}
         style={{ textShadow: '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000' }}>{label}</div>
 
-      <div className="flex gap-4">
+      <div className="flex flex-col lg:flex-row gap-4">
         {/* ── Left column: sprite + search + dropdowns ── */}
-        <div className="flex flex-col gap-2 w-[220px] shrink-0">
+        <div className="flex flex-col gap-2 lg:w-[220px] lg:shrink-0">
           {/* Sprite */}
-          <div className="flex justify-center items-center h-20 bg-black/20 rounded-xl border border-white/10">
+          <div className="flex justify-center items-center h-24 lg:h-20 bg-black/20 rounded-xl border border-white/10">
             {loading ? (
               <Loader2 className="animate-spin text-white/60" size={28} aria-label="Loading Pokémon data" />
             ) : value.sprite ? (
@@ -168,7 +168,7 @@ export default function ParentPanel({ parentId, label, accentClass, value, onCha
         </div>
 
         {/* ── Right column: moves + IVs ── */}
-        <div className="flex flex-col gap-2 flex-1 border-l border-[#2ab8c8]/20 pl-4">
+        <div className="flex flex-col gap-2 flex-1 border-t lg:border-t-0 lg:border-l border-[#2ab8c8]/20 pt-3 lg:pt-0 lg:pl-4">
           {/* Moves */}
           <div className="col-span-2 text-xs uppercase tracking-wider" style={{ color: '#2ab8c8' }} aria-hidden="true">Moves</div>
           <div className="grid grid-cols-2 gap-2">

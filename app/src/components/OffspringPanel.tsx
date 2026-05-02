@@ -46,10 +46,10 @@ export default function OffspringPanel({ result, incompatible }: Props) {
           <span>These Pokémon cannot breed together.</span>
         </div>
       ) : result ? (
-        <div className="flex gap-6">
+        <div className="flex flex-col sm:flex-row gap-6">
           {/* Sprite */}
-          <div className="flex-shrink-0">
-            <div className="w-40 h-40 bg-black/20 rounded-xl border border-white/10 flex items-center justify-center">
+          <div className="flex-shrink-0 flex justify-center sm:block">
+            <div className="w-32 h-32 sm:w-40 sm:h-40 bg-black/20 rounded-xl border border-white/10 flex items-center justify-center">
               {result.sprite ? (
                 <img
                   src={result.sprite}

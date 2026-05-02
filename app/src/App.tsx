@@ -170,7 +170,7 @@ function BreedingApp() {
       <main id="main-content" aria-labelledby="app-title">
 
       {/* Parent panels */}
-      <div className="flex flex-nowrap justify-center items-start gap-3 px-4 pb-4">
+      <div className="flex flex-col lg:flex-row justify-center items-stretch lg:items-start gap-3 px-4 pb-4">
         <ParentPanel
           parentId={1}
           label="♂ Parent 1 (Male)"
@@ -181,10 +181,10 @@ function BreedingApp() {
         />
 
         {/* Swap button */}
-        <div className="flex items-center justify-center self-center">
+        <div className="flex items-center justify-center">
           <button
             onClick={handleSwap}
-            className="p-3 rounded-full text-white active:scale-95 transition-all hover:scale-110"
+            className="p-3 rounded-full text-white active:scale-95 transition-all hover:scale-110 rotate-90 lg:rotate-0"
             style={{ background: 'rgba(224,48,16,0.15)', border: '1px solid rgba(224,48,16,0.4)' }}
             onMouseEnter={e => (e.currentTarget.style.background = 'rgba(224,48,16,0.3)')}
             onMouseLeave={e => (e.currentTarget.style.background = 'rgba(224,48,16,0.15)')}
@@ -206,6 +206,7 @@ function BreedingApp() {
       </div>
 
       {/* Breed controls */}
+      <div className="px-4">
       <BreedControls
         options={options}
         onChange={setOptions}
@@ -213,6 +214,7 @@ function BreedingApp() {
         isBreeding={isBreeding}
         canBreed={canBreed}
       />
+      </div>
 
       {/* Output */}
       <div className="px-4 pb-12">
